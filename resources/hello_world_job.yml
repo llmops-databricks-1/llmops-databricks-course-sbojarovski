@@ -4,6 +4,7 @@ resources:
       name: hello-world
       tags:
         project_name: "llmops-databricks-course-sbojarovski"
+        target: ${bundle.target}
 
       environments:
         - environment_key: default
