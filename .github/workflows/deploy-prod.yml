@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Databricks CLI
         run: |
-          pip install databricks-cli
+          curl https://raw.githubusercontent.com/databricks/cli/main/install.sh | sh
 
       - name: Deploy to Databricks (prod)
         env:
