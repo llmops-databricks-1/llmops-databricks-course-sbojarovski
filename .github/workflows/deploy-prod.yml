@@ -18,6 +18,10 @@ jobs:
         run: |
           uv sync
 
+      - name: Install Databricks CLI
+        run: |
+          pip install databricks-cli
+
       - name: Deploy to Databricks (prod)
         env:
           DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_PROD_CLIENT_ID }}
