@@ -71,7 +71,10 @@ jobs:
           DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
           GH_TOKEN: ${{ github.token }}
         run: |
+          echo "=== Bundle Summary Output ==="
           SUMMARY=$(databricks bundle --target=dev bundle summary)
+          echo "$SUMMARY"
+          echo "=== End Summary ==="
           BODY="## Databricks Bundle Summary (Dev)
 
           \`\`\`
