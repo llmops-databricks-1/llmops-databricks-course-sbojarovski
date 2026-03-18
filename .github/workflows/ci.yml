@@ -71,12 +71,7 @@ jobs:
           DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "=== Bundle Summary Output ==="
-          SUMMARY=$(databricks bundle summary --target=dev 2>&1)
-          EXIT_CODE=$?
-          echo "Exit code: $EXIT_CODE"
-          echo "$SUMMARY"
-          echo "=== End Summary ==="
+          SUMMARY=$(databricks bundle summary --target=dev)
           BODY="## Databricks Bundle Summary (Dev)
 
           \`\`\`

@@ -36,4 +36,4 @@ jobs:
           DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_PROD_CLIENT_ID }}
           DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_PROD_CLIENT_SECRET }}
         run: |
-          databricks bundle --target=prod bundle summary
+          databricks bundle summary --target=prod
