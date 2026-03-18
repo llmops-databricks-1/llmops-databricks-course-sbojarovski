@@ -60,3 +60,20 @@ jobs:
           DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
         run: |
           databricks bundle --target=dev deploy
+
+      - name: Databricks bundle summary (dev)
+        if: success()
+        env:
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_DEV_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          SUMMARY=$(databricks bundle --target=dev bundle summary)
+          gh pr comment "${{ github.event.pull_request.number }}" --body "$(cat <<'EOF'
+          ## Databricks Bundle Summary (Dev)
+
+          \`\`\`
+          $SUMMARY
+          \`\`\`
+          EOF
+          )"
