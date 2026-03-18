@@ -41,3 +41,14 @@ jobs:
       - name: run pytest
         run: |
           uv run pytest
+
+      - name: Validate Databricks bundle (dev)
+        run: |
+          databricks bundle --target=dev validate
+
+      - name: Deploy to Databricks (dev)
+        env:
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_DEV_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
+        run: |
+          databricks bundle --target=dev deploy
