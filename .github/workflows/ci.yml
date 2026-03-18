@@ -72,7 +72,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           echo "=== Bundle Summary Output ==="
-          SUMMARY=$(databricks bundle --target=dev bundle summary)
+          SUMMARY=$(databricks bundle summary --target=dev 2>&1)
+          EXIT_CODE=$?
+          echo "Exit code: $EXIT_CODE"
           echo "$SUMMARY"
           echo "=== End Summary ==="
           BODY="## Databricks Bundle Summary (Dev)
