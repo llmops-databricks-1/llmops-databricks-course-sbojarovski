@@ -37,7 +37,7 @@ jobs:
 
       - name: Install Databricks CLI
         run: |
-          curl https://raw.githubusercontent.com/databricks/cli/main/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
 #      - name: Run pre-commit checks
 #        run: |
