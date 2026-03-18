@@ -72,8 +72,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           SUMMARY=$(databricks bundle --target=dev bundle summary)
-          gh pr comment --body "## Databricks Bundle Summary (Dev)
+          BODY="## Databricks Bundle Summary (Dev)
 
           \`\`\`
           $SUMMARY
           \`\`\`"
+          gh pr comment --body "$BODY"
