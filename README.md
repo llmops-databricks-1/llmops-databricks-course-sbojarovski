@@ -33,6 +33,53 @@ This project uses Python 3.12 (matching Databricks Serverless Environment 4) and
 
    **Note:** Due to global pypi configuration, you must explicitly specify `--index https://pypi.org/simple/` when running uv commands. The `make build` target handles this automatically.
 
+### Environment Configuration
+
+This project uses Pydantic Settings to manage configuration via environment variables and `.env` files.
+
+**Environment Files:**
+
+Configuration for each deployment target is stored in `./environments/`:
+
+| File | Purpose |
+|------|---------|
+| `environments/local.env` | Local development |
+| `environments/dev.env` | Development Databricks target |
+| `environments/prod.env` | Production Databricks target |
+| `environments/cauchy.env` | Cauchy Databricks target |
+
+**PyCharm Setup:**
+
+To automatically load environment variables when running code in PyCharm:
+
+1. Open **Run → Edit Configurations**
+2. Select your run configuration (or create a new one)
+3. Under **Environment**, click the folder icon
+4. Select `environments/local.env` to load local configuration
+5. Click **OK**
+
+Alternatively, you can set the environment file for all run configurations via **PyCharm → Settings → Tools → Python Integrated Tools → Default test runner** and configuring the environment there.
+
+**Using Settings in Code:**
+
+```python
+from llmops_databricks_course_sbojarovski.config import get_settings
+
+# Load settings for local environment
+settings = get_settings(environment="local")
+print(settings.spark_session_profile)
+
+# Override with environment variables
+import os
+os.environ["SPARK_SESSION_PROFILE"] = "custom-profile"
+settings = get_settings(environment="local")
+print(settings.spark_session_profile)  # "custom-profile"
+```
+
+**In Notebooks:**
+
+When running notebooks on Databricks, environment variables can be set at the cluster level or passed via `databricks.yml` configuration. The CI/CD pipeline injects secrets as environment variables during deployment.
+
 ### Common Commands
 
 Use the Makefile for convenient development workflows:
