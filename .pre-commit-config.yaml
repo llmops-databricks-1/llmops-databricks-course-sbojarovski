@@ -1,5 +1,53 @@
 exclude: ^tests/resources/
 repos:
+  - repo: local
+    hooks:
+      # Local development: formats Python files in-place
+      - id: ruff-format
+        name: ruff-format
+        entry: uv run --index https://pypi.org/simple ruff format .
+        language: system
+        types: [ python ]
+        always_run: true
+        pass_filenames: false
+
+      # CI check: validates that Python files are properly formatted (no edits)
+      - id: ruff-format-ci
+        name: ruff-format-ci
+        entry: uv run --index https://pypi.org/simple ruff format --check --diff .
+        language: system
+        types: [ python ]
+        always_run: true
+        pass_filenames: false
+
+      # Local development & CI: linting checks with automatic fixes
+      - id: ruff-check
+        name: ruff-check
+        entry: uv run --index https://pypi.org/simple ruff check .
+        language: system
+        types: [ python ]
+        always_run: true
+        pass_filenames: false
+
+      # Local development & CI: type checking
+      - id: mypy
+        name: mypy
+        entry: uv run --index https://pypi.org/simple mypy .
+        language: system
+        types: [ python ]
+        always_run: true
+        pass_filenames: false
+
+      # Local development & CI: unit tests
+      - id: pytest
+        name: pytest
+        entry: uv run --index https://pypi.org/simple pytest
+        language: system
+        types: [ python ]
+        always_run: true
+        pass_filenames: false
+        verbose: true
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -15,9 +63,3 @@ repos:
       - id: detect-private-key
       - id: forbid-new-submodules
       - id: check-docstring-first
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.1
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix, --show-fixes]
-      - id: ruff-format

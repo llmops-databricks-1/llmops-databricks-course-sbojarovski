@@ -31,10 +31,10 @@ dev = ["databricks-connect>=17.0, <18",
        "ipykernel>=6.29.5, <7",
        "pip>=25.0.1, <26",
        "pre-commit>=4.1.0, <5",
-       "claudetracing>=0.2.0, <1",]
-
-ci = ["pre-commit>=4.1.0, <5",
-      "pytest>=8.3.4, <9"]
+       "claudetracing>=0.2.0, <1",
+       "pytest>=8.3.4, <9",
+       "ruff>=0.15.0, <1",
+       "mypy>=1.0, <2"]
 
 [build-system]
 requires = ["hatchling"]
@@ -45,7 +45,7 @@ path = "version.txt"
 pattern = "(?P<version>[^\\n]+)"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/your_custom_package"]
+packages = ["src/llmops_databricks_course_sbojarovski"]
 
 [tool.pytest.ini_options]
 addopts = "-s --no-header --no-summary"
@@ -55,6 +55,7 @@ pythonpath = ["."]
 [tool.ruff]
 line-length = 90
 
+[tool.ruff.lint]
 select = [
     "F",    # pyflakes rules
     "E",    # pycodestyle error rules
@@ -74,9 +75,7 @@ ignore = [
     "D213",   # multi-line-summary-second-line
     "C901",   # too complex
     "ERA001", # commented out code
-    "ANN204",
-    "ANN102",
-    "ANN101"
+    "ANN204"
 ]
 
 [tool.ruff.format]

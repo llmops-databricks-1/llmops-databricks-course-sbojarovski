@@ -36,19 +36,17 @@ jobs:
 
       - name: Install the dependencies
         run: |
-          uv sync --extra ci
+          uv sync --extra dev --index https://pypi.org/simple/
 
       - name: Install Databricks CLI
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-#      - name: Run pre-commit checks
-#        run: |
-#          uv run pre-commit run --all-files
-#
-#      - name: run pytest
-#        run: |
-#          uv run pytest
+      # Run all pre-commit checks except ruff-format (which modifies files)
+      # This includes: ruff-format-ci (check only), ruff-check, mypy, pytest, and other static checks
+      - name: Run pre-commit checks
+        run: |
+          uv run --index https://pypi.org/simple/ pre-commit run --all-files --exclude-hook=ruff-format
 
       - name: Validate Databricks bundle (dev)
         env:

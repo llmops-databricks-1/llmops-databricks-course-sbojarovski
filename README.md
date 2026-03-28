@@ -33,6 +33,29 @@ This project uses Python 3.12 (matching Databricks Serverless Environment 4) and
 
    **Note:** Due to global pypi configuration, you must explicitly specify `--index https://pypi.org/simple/` when running uv commands. The `make build` target handles this automatically.
 
+### Common Commands
+
+Use the Makefile for convenient development workflows:
+
+```bash
+# Build the environment
+make build
+
+# Run linting and code formatting checks
+make lint
+
+# Run tests
+make test
+
+# Deploy to Databricks local target
+make deploy
+
+# Show all available commands
+make help
+```
+
+All `make` targets automatically handle the PyPI index configuration, so you don't need to specify it manually.
+
 ## Deployment
 
 ### Deployment Targets
@@ -48,7 +71,7 @@ The project is configured with the following Databricks deployment targets in `d
 
 - **Development targets** (`local`, `dev`) are used for active development and testing
 - **Production target** (`prod`) is reserved for production deployments via CI/CD pipelines
-- **Cauchy target** is used for testing features that are not available in the Databricks Free Edition Workspace, 
+- **Cauchy target** is used for testing features that are not available in the Databricks Free Edition Workspace,
   such as Unity Catalog and Serverless SQL Endpoints. This allows to run certain features in the course while using the
   Free Edition for the majority of the work.
 - The `local` target is the default for manual deployments
