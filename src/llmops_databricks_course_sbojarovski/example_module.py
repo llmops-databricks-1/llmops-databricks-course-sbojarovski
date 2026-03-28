@@ -1,12 +1,11 @@
 from databricks.connect import DatabricksSession
 
-from llmops_databricks_course_sbojarovski.config import get_settings
+from llmops_databricks_course_sbojarovski.config import settings
 
 
 def example_function() -> None:
-    settings = get_settings(environment="local")
     spark = (
-        DatabricksSession.builder.profile(settings.spark_session_profile)
+        DatabricksSession.builder.profile(settings.SPARK_SESSION_PROFILE)
         .serverless(True)
         .getOrCreate()
     )
