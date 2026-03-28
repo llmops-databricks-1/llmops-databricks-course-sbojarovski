@@ -36,22 +36,16 @@ dev = ["databricks-connect>=17.0, <18",
 ci = ["pre-commit>=4.1.0, <5",
       "pytest>=8.3.4, <9"]
 
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.package-data]
-"your_custom_package" = ["../../../project_config.yml"]
-
 [build-system]
-requires = ["setuptools>=72.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["your_custom_package*"]
+[tool.hatch.version]
+path = "version.txt"
+pattern = "(?P<version>[^\\n]+)"
 
-[tool.setuptools.dynamic]
-version = { file = "version.txt" }
+[tool.hatch.build.targets.wheel]
+packages = ["src/your_custom_package"]
 
 [tool.pytest.ini_options]
 addopts = "-s --no-header --no-summary"

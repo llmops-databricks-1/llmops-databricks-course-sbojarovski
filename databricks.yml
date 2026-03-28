@@ -12,7 +12,7 @@ variables:
 artifacts:
   default:
     type: whl
-    build: uv build
+    build: uv build --index https://pypi.org/simple/
     path: .
 
 targets:

@@ -1,0 +1,18 @@
+.PHONY: help build deploy
+
+help:
+	@echo "Available targets:"
+	@echo ""
+	@echo "  build    - Build the local environment using uv sync with PyPI"
+	@echo "  deploy   - Deploy the local target to Databricks (profile: bojarovski-llmops)"
+	@echo ""
+
+build:
+	uv sync --extra dev --index https://pypi.org/simple/
+
+deploy:
+	databricks --profile bojarovski-llmops bundle validate --target=local
+	UV_DEFAULT_INDEX=https://pypi.org/simple databricks --profile bojarovski-llmops bundle deploy --target=local
+	databricks --profile bojarovski-llmops bundle summary --target=local
+
+.DEFAULT_GOAL := help
