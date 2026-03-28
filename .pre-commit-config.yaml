@@ -2,7 +2,8 @@ exclude: ^tests/resources/
 repos:
   - repo: local
     hooks:
-      # Local development: formats Python files in-place
+      # Local development only: formats Python files in-place
+      # Set to 'manual' stage so it only runs locally, not in CI
       - id: ruff-format
         name: ruff-format
         entry: uv run --index https://pypi.org/simple ruff format .
@@ -10,6 +11,7 @@ repos:
         types: [ python ]
         always_run: true
         pass_filenames: false
+        stages: [manual]
 
       # CI check: validates that Python files are properly formatted (no edits)
       - id: ruff-format-ci
