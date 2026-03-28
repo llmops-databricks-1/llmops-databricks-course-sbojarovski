@@ -73,7 +73,5 @@ jobs:
           SUMMARY=$(databricks bundle summary --target=dev)
           BODY="## Databricks Bundle Summary (Dev)
 
-          \`\`\`
-          $SUMMARY
-          \`\`\`"
+          $SUMMARY"
           gh pr comment --body "$BODY"
