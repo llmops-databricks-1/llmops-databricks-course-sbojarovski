@@ -60,6 +60,13 @@ To automatically load environment variables when running code in PyCharm:
 
 Alternatively, you can set the environment file for all run configurations via **PyCharm → Settings → Tools → Python Integrated Tools → Default test runner** and configuring the environment there.
 
+**Configuration Structure:**
+
+The Settings class includes:
+- `spark_session_profile` — Profile name for Databricks Connect
+- `databricks.host` — Databricks workspace URL (from `databricks.yml` targets)
+- `databricks.serverless_compute_id` — Optional serverless compute ID
+
 **Using Settings in Code:**
 
 ```python
@@ -67,14 +74,40 @@ from llmops_databricks_course_sbojarovski.config import get_settings
 
 # Load settings for local environment
 settings = get_settings(environment="local")
-print(settings.spark_session_profile)
+print(settings.spark_session_profile)  # "bojarovski-llmops"
+print(settings.databricks.host)  # "https://dbc-749ee571-055f.cloud.databricks.com"
+print(settings.databricks.serverless_compute_id)  # None
 
-# Override with environment variables
+# Override with environment variables (use double underscore for nested fields)
 import os
 os.environ["SPARK_SESSION_PROFILE"] = "custom-profile"
+os.environ["DATABRICKS__SERVERLESS_COMPUTE_ID"] = "compute-123"
 settings = get_settings(environment="local")
 print(settings.spark_session_profile)  # "custom-profile"
+print(settings.databricks.serverless_compute_id)  # "compute-123"
 ```
+
+**Environment Variable Format:**
+
+For nested Databricks configuration, use double underscore:
+```bash
+# Set Databricks host
+export DATABRICKS__HOST=https://custom.cloud.databricks.com
+
+# Set serverless compute ID
+export DATABRICKS__SERVERLESS_COMPUTE_ID=my-compute-id
+
+# Or in .env file
+DATABRICKS__HOST=https://custom.cloud.databricks.com
+DATABRICKS__SERVERLESS_COMPUTE_ID=my-compute-id
+```
+
+**Workspace Hosts by Target:**
+
+Each target has its workspace host configured:
+- `local`, `dev`, `prod`: `https://dbc-749ee571-055f.cloud.databricks.com` (shared workspace)
+- `cauchy`: `https://dbc-b1b2f91a-d102.cloud.databricks.com` (separate workspace for Unity Catalog)
+- Default (free tier): `https://community.cloud.databricks.com`
 
 **In Notebooks:**
 
