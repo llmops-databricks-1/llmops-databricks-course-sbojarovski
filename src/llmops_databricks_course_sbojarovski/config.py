@@ -6,7 +6,15 @@ Settings are loaded from environment variables. Load .env files via:
 - GitHub Actions: Environment variables set automatically from secrets/workflows
 """
 
+import logging
+
 from pydantic_settings import BaseSettings
+
+logger = logging.getLogger(__name__)
+
+
+def print_config() -> None:
+    logger.info(f"""Current settings:\n{settings.model_dump_json(indent=4)}""")
 
 
 class Settings(BaseSettings):
