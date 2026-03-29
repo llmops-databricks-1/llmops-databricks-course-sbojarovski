@@ -21,8 +21,8 @@ class Settings(BaseSettings):
         python your_script.py
     """
 
-    # Spark/Databricks configuration
-    SPARK_SESSION_PROFILE: str = "bojarovski-llmops"
+    # Databricks configuration
+    DATABRICKS_CONFIG_PROFILE: str = "bojarovski-llmops"
     DATABRICKS_HOST: str = "https://community.cloud.databricks.com"
     DATABRICKS_SERVERLESS_COMPUTE_ID: str = "auto"
 
