@@ -4,8 +4,8 @@ help:
 	@echo "Available targets:"
 	@echo ""
 	@echo "  build    - Build the local environment using uv sync with PyPI"
-	@echo "  fmt      - Format all Python files with ruff"
-	@echo "  lint     - Run pre-commit checks"
+	@echo "  fmt      - Format code: ruff format + ruff check --fix (local only)"
+	@echo "  lint     - Run pre-commit checks (excludes auto-fix hooks)"
 	@echo "  test     - Run pytest"
 	@echo "  deploy   - Deploy the local target to Databricks (profile: bojarovski-llmops)"
 	@echo ""
@@ -15,6 +15,7 @@ build:
 
 fmt:
 	uv run --index https://pypi.org/simple/ ruff format .
+	uv run --index https://pypi.org/simple/ ruff check --fix .
 
 lint:
 	uv run --index https://pypi.org/simple/ pre-commit run --all-files

@@ -13,6 +13,17 @@ repos:
         pass_filenames: false
         stages: [manual]
 
+      # Local development only: fix linting issues in-place
+      # Set to 'manual' stage so it only runs locally, not in CI
+      - id: ruff-check-fix
+        name: ruff-check-fix
+        entry: uv run --index https://pypi.org/simple ruff check --fix .
+        language: system
+        types: [ python ]
+        always_run: true
+        pass_filenames: false
+        stages: [manual]
+
       # CI check: validates that Python files are properly formatted (no edits)
       - id: ruff-format-ci
         name: ruff-format-ci
