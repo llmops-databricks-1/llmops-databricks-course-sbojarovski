@@ -70,8 +70,15 @@ jobs:
           DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          SUMMARY=$(databricks bundle summary --target=dev)
-          BODY="## Databricks Bundle Summary (Dev)
+          # Delete all previous summary comments from this workflow
+          gh pr comment --list --json id,body --jq '.[] | select(.body | contains("Databricks Bundle Summary")) | .id' | while read COMMENT_ID; do
+            gh pr comment --delete "$COMMENT_ID" || true
+          done
 
-          $SUMMARY"
-          gh pr comment --body "$BODY"
+          # Get bundle summary and post new comment with preserved formatting
+          SUMMARY=$(databricks bundle summary --target=dev)
+          gh pr comment --body "## Databricks Bundle Summary (Dev)
+
+          \`\`\`
+          $SUMMARY
+          \`\`\`"
