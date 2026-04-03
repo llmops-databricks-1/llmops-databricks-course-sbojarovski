@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
 
 jobs:
   build_and_test:
@@ -32,12 +36,49 @@ jobs:
 
       - name: Install the dependencies
         run: |
-          uv sync --extra ci
+          uv sync --extra dev --index https://pypi.org/simple/
 
+      - name: Install Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      # Run all pre-commit checks
+      # Skips ruff-format (manual stage) which modifies files
+      # Includes: ruff-format-ci (check only), ruff-check, mypy, pytest, and other static checks
       - name: Run pre-commit checks
         run: |
-          uv run pre-commit run --all-files
+          uv run --index https://pypi.org/simple/ pre-commit run --all-files
 
-      - name: run pytest
+      - name: Validate Databricks bundle (dev)
+        env:
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_DEV_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
         run: |
-          uv run pytest
+          databricks bundle --target=dev validate
+
+      - name: Deploy to Databricks (dev)
+        env:
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_DEV_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
+        run: |
+          databricks bundle --target=dev deploy
+
+      - name: Databricks bundle summary (dev)
+        if: success() && github.event_name == 'pull_request'
+        env:
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_DEV_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_DEV_CLIENT_SECRET }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Delete all previous summary comments from this workflow
+          gh pr comment --list --json id,body --jq '.[] | select(.body | contains("Databricks Bundle Summary")) | .id' | while read COMMENT_ID; do
+            gh pr comment --delete "$COMMENT_ID" || true
+          done
+
+          # Get bundle summary and post new comment with preserved formatting
+          SUMMARY=$(databricks bundle summary --target=dev)
+          gh pr comment --body "## Databricks Bundle Summary (Dev)
+
+          \`\`\`
+          $SUMMARY
+          \`\`\`"
