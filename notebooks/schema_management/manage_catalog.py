@@ -27,35 +27,24 @@ spark = provide_spark_session()
 
 # COMMAND ----------
 logger.info(f"Creating catalog '{settings.CATALOG_NAME}'...")
-try:
-    spark.sql(f"""
-        CREATE CATALOG IF NOT EXISTS {settings.CATALOG_NAME}
-    """)
-    logger.info(f"Successfully created catalog '{settings.CATALOG_NAME}'")
-except Exception as e:
-    logger.error(f"Failed to create catalog: {e}", exc_info=True)
-    raise
+spark.sql(f"""
+    CREATE CATALOG IF NOT EXISTS {settings.CATALOG_NAME}
+""")
+logger.info(f"Successfully created catalog '{settings.CATALOG_NAME}'")
 
 
 # COMMAND ----------
 logger.info(f"Updating catalog '{settings.CATALOG_NAME}'...")
-try:
-    spark.sql(f"""
-        COMMENT ON CATALOG {settings.CATALOG_NAME} IS
-        'Unity Catalog for the llmops-databricks-course project'
-    """)
-    logger.info(f"Successfully added comment to catalog '{settings.CATALOG_NAME}'")
-except Exception as e:
-    logger.warning(f"Could not add comment to catalog: {e}")
+spark.sql(f"""
+    COMMENT ON CATALOG {settings.CATALOG_NAME} IS
+    'Unity Catalog for the llmops-databricks-course project'
+""")
+logger.info(f"Successfully added comment to catalog '{settings.CATALOG_NAME}'")
 
-try:
-    spark.sql(f"""
-        ALTER CATALOG {settings.CATALOG_NAME}
-        SET TAGS (
-            'environment' = '{settings.ENV}',
-            'owner_name' = '{settings.USER_SHORT_NAME}'
-        )
-    """)
-    logger.info(f"Successfully set tags on catalog '{settings.CATALOG_NAME}'")
-except Exception as e:
-    logger.warning(f"Could not set tags on catalog (may require additional permissions): {e}")
+spark.sql(f"""
+    ALTER CATALOG {settings.CATALOG_NAME}
+    SET TAGS (
+        'environment' = '{settings.ENV}'
+    )
+""")
+logger.info(f"Successfully set tags on catalog '{settings.CATALOG_NAME}'")

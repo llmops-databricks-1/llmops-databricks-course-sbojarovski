@@ -21,42 +21,36 @@ spark.catalog.setCurrentCatalog(settings.CATALOG_NAME)
 # COMMAND ----------
 
 logger.info(f"Creating schema '{settings.DATA_INGESTION_SCHEMA_NAME}'...")
-try:
-    spark.sql(f"""
-            CREATE SCHEMA IF NOT EXISTS {settings.DATA_INGESTION_SCHEMA_NAME}
-            WITH DBPROPERTIES (
-            Name='{settings.USER_SHORT_NAME}',
-            Environment='{settings.ENV}'
-            )
-            """)
-    logger.info(f"Successfully created schema '{settings.DATA_INGESTION_SCHEMA_NAME}'")
-except Exception as e:
-    logger.error(f"Failed to create schema: {e}", exc_info=True)
-    raise
+spark.sql(f"""
+        CREATE SCHEMA IF NOT EXISTS {settings.DATA_INGESTION_SCHEMA_NAME}
+        WITH DBPROPERTIES (
+            creator_user_name='{settings.USER_SHORT_NAME}',
+            environment='{settings.ENV}'
+        )
+        """)
+logger.info(f"Successfully created schema '{settings.DATA_INGESTION_SCHEMA_NAME}'")
+
 
 # COMMAND ----------
-logger.info(f"Updating schema '{settings.DATA_INGESTION_SCHEMA_NAME}'...")
-try:
-    spark.sql(f"""
-            COMMENT ON SCHEMA {settings.DATA_INGESTION_SCHEMA_NAME} IS
-            'This schema contains objects where ingested data is stored for the llm agent RAG'
-            """)
-    logger.info(f"Successfully added comment to schema '{settings.DATA_INGESTION_SCHEMA_NAME}'")
-except Exception as e:
-    logger.warning(f"Could not add comment to schema: {e}")
+logger.info(f"Updating schema comment on '{settings.DATA_INGESTION_SCHEMA_NAME}'...")
+spark.sql(f"""
+        COMMENT ON SCHEMA {settings.DATA_INGESTION_SCHEMA_NAME} IS
+        'This schema contains objects where ingested data is stored for the llm agent RAG'
+        """)
+logger.info(f"Successfully added comment to schema '{settings.DATA_INGESTION_SCHEMA_NAME}'")
 
-try:
-    spark.sql(f"""
-            ALTER SCHEMA {settings.DATA_INGESTION_SCHEMA_NAME}
-                    SET TAGS (
-                    'environment' = '{settings.ENV}',
-                    'owner_name' = '{settings.USER_SHORT_NAME}'
-                    )
-            """)
-    logger.info(f"Successfully set tags on schema '{settings.DATA_INGESTION_SCHEMA_NAME}'")
-except Exception as e:
-    logger.warning(f"Could not set tags on schema (may require additional permissions): {e}")
+# COMMAND ----------
+logger.info(f"Updating schema tags on '{settings.DATA_INGESTION_SCHEMA_NAME}'...")
+spark.sql(f"""
+        ALTER SCHEMA {settings.DATA_INGESTION_SCHEMA_NAME}
+                SET TAGS (
+                'environment' = '{settings.ENV}'
+                )
+        """)
+logger.info(f"Successfully set tags on schema '{settings.DATA_INGESTION_SCHEMA_NAME}'")
 
+# COMMAND ----------
+logger.info(f"Setting current schema to {settings.DATA_INGESTION_SCHEMA_NAME}...")
 spark.catalog.setCurrentDatabase(settings.DATA_INGESTION_SCHEMA_NAME)
 
 # COMMAND ----------
@@ -73,6 +67,9 @@ spark.sql(f"""
     )
     USING DELTA
 """)
+
+# COMMAND ----------
+logger.info(f"Setting comment on {settings.PDF_STORED_METADATA_TABLE_NAME} table...")
 spark.sql(f"""
     COMMENT ON TABLE {settings.PDF_STORED_METADATA_TABLE_NAME} IS
     'This table contains metadata of the papers whose PDFs have been ingested and stored in the volume. It serves as a checkpoint for incremental ingestion.'

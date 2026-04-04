@@ -15,6 +15,7 @@ from pydantic_settings import BaseSettings, PydanticBaseSettingsSource
 
 from llmops_databricks_course_sbojarovski.providers import provide_workspace_client
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -105,12 +106,6 @@ class Settings(BaseSettings):
     DATA_INGESTION_SCHEMA_NAME: str = "ingested_data"
 
     PDF_STORED_METADATA_TABLE_NAME: str = "arxiv_papers"
-
-    class Config:
-        """Pydantic Settings configuration."""
-
-        # Case-sensitive to match uppercase environment variables
-        case_sensitive = True
 
     @classmethod
     def settings_customise_sources(
