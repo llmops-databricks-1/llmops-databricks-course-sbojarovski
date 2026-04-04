@@ -1,0 +1,25 @@
+resources:
+  jobs:
+    schema_management_job:
+      name: schema-management
+      tags:
+        project_name: "llmops-databricks-course-sbojarovski"
+        target: ${bundle.target}
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+            dependencies:
+              - ../dist/*.whl
+
+      tasks:
+        - task_key: manage_data_ingestion_schema
+          environment_key: default
+          notebook_task:
+            notebook_path: ../notebooks/schema_management/manage_data_ingestion_schema.py
+            base_parameters:
+              env: ${var.env}
+              user_short_name: ${var.user_short_name}
+              git_sha: "${var.git_sha}"
+              run_id: "{{job.run_id}}"
