@@ -1,4 +1,4 @@
-.PHONY: help build deploy fmt lint test
+.PHONY: help build deploy fmt lint test schema
 
 help:
 	@echo "Available targets:"
@@ -8,6 +8,7 @@ help:
 	@echo "  lint     - Run pre-commit checks (excludes auto-fix hooks)"
 	@echo "  test     - Run pytest"
 	@echo "  deploy   - Deploy the local target to Databricks (profile: bojarovski-llmops)"
+	@echo "  schema   - Run the schema management job on the local target"
 	@echo ""
 
 build:
@@ -27,5 +28,8 @@ deploy:
 	databricks --profile bojarovski-llmops bundle validate --target=local
 	UV_DEFAULT_INDEX=https://pypi.org/simple databricks --profile bojarovski-llmops bundle deploy --target=local
 	databricks --profile bojarovski-llmops bundle summary --target=local
+
+schema:
+	databricks --profile bojarovski-llmops bundle run schema_management_job --target=local
 
 .DEFAULT_GOAL := help

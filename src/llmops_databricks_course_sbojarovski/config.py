@@ -10,7 +10,6 @@ import logging
 from typing import Any
 
 from databricks.sdk import WorkspaceClient
-from pydantic import computed_field
 from pydantic.fields import FieldInfo
 from pydantic_settings import BaseSettings, PydanticBaseSettingsSource
 
@@ -93,11 +92,11 @@ class Settings(BaseSettings):
     USER_SHORT_NAME: str | None = None
 
     @property
-    @computed_field
     def CATALOG_NAME(self) -> str:
         """Determine catalog name based on ENV setting."""
         catalog_name_mapping = {
             "local": "mlops_dev",
+            "cauchy": "mlops_dev",
             "dev": "mlops_acc",
             "prod": "mlops_prd",
         }
