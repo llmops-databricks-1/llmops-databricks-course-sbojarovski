@@ -8,6 +8,12 @@ variables:
   git_sha:
     description: "Git SHA of the deployed commit"
     default: "local"
+  env:
+    description: "Deployment environment (dev, prod, etc.)"
+    default: ${bundle.target}
+  user_short_name:
+    description: "Short name of the user (for schema management)"
+    default: ${workspace.current_user.userName}
 
 artifacts:
   default:
