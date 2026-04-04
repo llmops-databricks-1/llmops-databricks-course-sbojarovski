@@ -29,8 +29,7 @@ targets:
       host:  https://dbc-749ee571-055f.cloud.databricks.com
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}
     run_as:
-      # llmops-dev
-      service_principal_name: 57f73d1d-3240-4316-9371-bc91e010a7fb
+      user_name: ${workspace.current_user.userName}
     permissions:
       - user_name: ${workspace.current_user.userName}
         level: CAN_MANAGE
