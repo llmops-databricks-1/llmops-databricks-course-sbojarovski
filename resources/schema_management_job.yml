@@ -14,7 +14,19 @@ resources:
               - ../dist/*.whl
 
       tasks:
+        - task_key: manage_catalog
+          environment_key: default
+          notebook_task:
+            notebook_path: ../notebooks/schema_management/manage_catalog.py
+            base_parameters:
+              env: ${var.env}
+              user_short_name: ${var.user_short_name}
+              git_sha: "${var.git_sha}"
+              run_id: "{{job.run_id}}"
+
         - task_key: manage_data_ingestion_schema
+          depends_on:
+            - task_key: manage_catalog
           environment_key: default
           notebook_task:
             notebook_path: ../notebooks/schema_management/manage_data_ingestion_schema.py
