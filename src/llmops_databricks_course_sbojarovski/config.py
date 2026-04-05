@@ -93,7 +93,7 @@ class Settings(BaseSettings):
     USER_SHORT_NAME: str | None = None
 
     @property
-    def CATALOG_NAME(self) -> str:
+    def CATALOG(self) -> str:
         """Determine catalog name based on ENV setting."""
         catalog_name_mapping = {
             "local": "mlops_dev",
@@ -103,9 +103,22 @@ class Settings(BaseSettings):
         }
         return catalog_name_mapping.get(self.ENV, catalog_name_mapping["local"])
 
-    DATA_INGESTION_SCHEMA_NAME: str = "ingested_data"
+    DATA_INGESTION_SCHEMA: str = "ingested_data"
 
-    PDF_STORED_METADATA_TABLE_NAME: str = "arxiv_papers"
+    PDF_STORAGE_METADATA_TABLE: str = "arxiv_papers"
+    PDF_STORAGE_VOLUME: str = "pdf_files"
+
+    @property
+    def PDF_STORAGE_METADATA_TABLE_FULL_NAME(self) -> str:
+        return f"{self.CATALOG}.{self.DATA_INGESTION_SCHEMA}.{self.PDF_STORAGE_METADATA_TABLE}"
+
+    @property
+    def PDF_STORAGE_VOLUME_FULL_NAME(self) -> str:
+        return f"{self.CATALOG}.{self.DATA_INGESTION_SCHEMA}.{self.PDF_STORAGE_VOLUME}"
+
+    @property
+    def PDF_STORAGE_VOLUME_FULL_PATH(self) -> str:
+        return f"/Volumes/{self.CATALOG}/{self.DATA_INGESTION_SCHEMA}/{self.PDF_STORAGE_VOLUME}"
 
     @classmethod
     def settings_customise_sources(
