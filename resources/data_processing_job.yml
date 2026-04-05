@@ -1,0 +1,25 @@
+resources:
+  jobs:
+    data_processing_job:
+      name: data-processing
+      tags:
+        project_name: "llmops-databricks-course-sbojarovski"
+        target: ${bundle.target}
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+            dependencies:
+              - ../dist/*.whl
+
+      tasks:
+        - task_key: ingest_data
+          environment_key: default
+          notebook_task:
+            notebook_path: ../notebooks/ingest_data.py
+            base_parameters:
+              env: ${var.env}
+              user_short_name: ${var.user_short_name}
+              git_sha: "${var.git_sha}"
+              run_id: "{{job.run_id}}"
