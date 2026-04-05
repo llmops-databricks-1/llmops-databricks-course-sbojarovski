@@ -1,18 +1,6 @@
-import time
-from dataclasses import dataclass
 from datetime import datetime
 
-from arxiv import Client, Search  # type: ignore[import-untyped]
-
-
-@dataclass
-class PaperRecord:
-    paper_id: str
-    title: str
-    authors: list[str]
-    summary: str
-    pdf_url: str
-    published_datetime: datetime
+from arxiv import Client, Result, Search  # type: ignore[import-untyped]
 
 
 class ArxivService:
@@ -33,24 +21,10 @@ class ArxivService:
         self,
         start_datetime: datetime,
         end_datetime: datetime,
-    ) -> list[PaperRecord]:
+    ) -> list[Result]:
 
         search = Search(
             query=f"cat:cs.AI AND submittedDate:[{self._format_timestamp(start_datetime)} TO {self._format_timestamp(end_datetime)}]",
         )
 
-        records = []
-        for paper in self.arxiv_client.results(search):
-            records.append(
-                PaperRecord(
-                    paper_id=paper.get_short_id(),
-                    title=paper.title,
-                    authors=[author.name for author in paper.authors],
-                    summary=paper.summary,
-                    pdf_url=paper.pdf_url,
-                    published_datetime=paper.published,
-                )
-            )
-            time.sleep(3)
-
-        return records
+        return list(self.arxiv_client.results(search))
